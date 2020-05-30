@@ -1,6 +1,7 @@
 package basic.sudoku;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -17,9 +18,9 @@ public class PuzzleTests {
 
         for (int r = 0; r < 9; r++) {
             if (r == 5) {
-                assertEquals(false, rowInvalidPuz.rowIsValid(r));
+                assertFalse(rowInvalidPuz.rowIsValid(r));
             } else {
-                assertEquals(true, rowInvalidPuz.rowIsValid(r));
+                assertTrue(rowInvalidPuz.rowIsValid(r));
             }
         }
     }
@@ -33,9 +34,9 @@ public class PuzzleTests {
 
         for (int c = 0; c < 9; c++) {
             if (c == 1) {
-                assertEquals(false, colInvalidPuz.colIsValid(c));
+                assertFalse(colInvalidPuz.colIsValid(c));
             } else {
-                assertEquals(true, colInvalidPuz.colIsValid(c));
+                assertTrue(colInvalidPuz.colIsValid(c));
             }
         }
     }
@@ -50,9 +51,9 @@ public class PuzzleTests {
         for (int r = 0; r < 3; r++) {
             for (int c = 0; c < 3; c++) {
                 if (r == 2 && c == 0) {
-                    assertEquals(false, boxInvalidPuz.boxIsValid(r, c));
+                    assertFalse(boxInvalidPuz.boxIsValid(r, c));
                 } else {
-                    assertEquals(true, boxInvalidPuz.boxIsValid(r, c));
+                    assertTrue(boxInvalidPuz.boxIsValid(r, c));
                 }
             }
         }
@@ -62,22 +63,22 @@ public class PuzzleTests {
     public void testCheckIsValid() throws FileNotFoundException, IOException {
 
         Puzzle validPuz = Parser.readFromCsv("src/test/resources/sudoku_example.csv");
-        assertEquals(true, validPuz.checkIsValid());
+        assertTrue(validPuz.checkIsValid());
 
         // This has a repeat element in one row
         Puzzle rowInvalidPuz = Parser
             .readFromCsv("src/test/resources/sudoku_example_invalid_row.csv");
-        assertEquals(false, rowInvalidPuz.checkIsValid());
+        assertFalse(rowInvalidPuz.checkIsValid());
 
         // This has a repeat element in one col
         Puzzle colInvalidPuz = Parser
             .readFromCsv("src/test/resources/sudoku_example_invalid_col.csv");
-        assertEquals(false, colInvalidPuz.checkIsValid());
+        assertFalse(colInvalidPuz.checkIsValid());
 
         // This has a repeat element in one box
         Puzzle boxInvalidPuz = Parser
             .readFromCsv("src/test/resources/sudoku_example_invalid_box.csv");
-        assertEquals(false, boxInvalidPuz.checkIsValid());
+        assertFalse(boxInvalidPuz.checkIsValid());
 
     }
 }
