@@ -1,7 +1,5 @@
 package basic.sudoku;
 
-import java.util.HashMap;
-
 public class Puzzle {
     int[][] grid;
 
@@ -33,13 +31,13 @@ public class Puzzle {
         return true;
     }
 
-    private boolean rowIsValid(int r) {
+    public boolean rowIsValid(int r) {
         int[] set = grid[r];
 
         return setIsValid(set);
     }
 
-    private boolean colIsValid(int c) {
+    public boolean colIsValid(int c) {
         int[] set = new int[9];
 
         for (int i = 0; i < 9; i++) {
@@ -49,7 +47,7 @@ public class Puzzle {
         return setIsValid(set);
     }
 
-    private boolean boxIsValid(int i, int j) {
+    public boolean boxIsValid(int i, int j) {
         int[] set = new int[9];
 
         // Unroll box into array.
