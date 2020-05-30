@@ -74,8 +74,8 @@ public class Puzzle {
         return true;
     }
 
-    public void solve() {
-        // TODO
+    public Puzzle solve() {
+        return this;
     }
 
     public String getStr() {
