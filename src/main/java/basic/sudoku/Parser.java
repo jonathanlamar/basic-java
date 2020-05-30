@@ -12,7 +12,7 @@ import org.apache.commons.csv.CSVRecord;
 
 public class Parser {
 
-    public static int[][] readFromCsv(String fileString) throws FileNotFoundException, IOException, Error {
+    public static Puzzle readFromCsv(String fileString) throws FileNotFoundException, IOException, Error {
 
         Reader fileIn = new FileReader(fileString);
         CSVParser parser = new CSVParser(fileIn, CSVFormat.DEFAULT.withDelimiter(',')); 
@@ -26,14 +26,13 @@ public class Parser {
         int[][] parsedArr = new int[9][9];
 
         for (int r = 0; r < 9; r++) {
-            System.out.println("Row " + r);
             for (int c = 0; c < 9; c++) {
                 String cellVal = records.get(r).get(c);
                 parsedArr[r][c] = parseCell(cellVal);
             }
         }
 
-        return parsedArr;
+        return new Puzzle(parsedArr);
 
     }
 
@@ -41,12 +40,9 @@ public class Parser {
 
         int out;
 
-        System.out.println(cellVal);
         if (cellVal.equals(".")) {
-            System.out.println("Equals period");
             out = -1;
         } else {
-            System.out.println("Does not equal period");
             out = Integer.parseInt(cellVal);
         }
 

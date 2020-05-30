@@ -1,25 +1,33 @@
 package basic.sudoku;
 
-import java.util.Scanner;
+import java.io.IOException;
 
 public class Sudoku {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
-        Scanner fileIn = new Scanner(System.in); 
-        System.out.println("Please enter a csv file containing a sudoku puzzle."); 
-        String fileName = fileIn.nextLine(); 
-        fileIn.close();
-        System.out.println("You entered this file: " + fileName);
+        promptEnterKey("Press Enter to grab a sudoku puzzle."); 
+
+        Generator gen = new Generator();
+        Puzzle grid = gen.getNewPuzzle();
+
+        System.out.println("Here is your puzzle.");
+        System.out.println(grid.getStr());
+        
+        promptEnterKey("Press Enter to solve the puzzle.");
+
+        grid.solve();
+
+        System.out.println("Here is your solved puzzle.");
+        System.out.println(grid.getStr());
+
+    }
+
+    public static void promptEnterKey(String prompt) {
+        System.out.println(prompt);
 
         try {
-            int[][] sudokuGrid = Parser.readFromCsv(fileName); 
-            boolean isValid = Checker.checkGrid(sudokuGrid);
-            if (isValid) {
-                System.out.println("It's good.");
-            } else {
-                System.out.println("It's not good.");
-            }
-        } catch (Exception e) {
+            System.in.read();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
