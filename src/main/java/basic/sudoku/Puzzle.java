@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Stack;
 
 public class Puzzle {
-    int[][] grid;
+    public int[][] grid;
 
     public Puzzle(int[][] sudokuGrid) throws Error {
 
@@ -42,7 +42,10 @@ public class Puzzle {
             set.add(grid[r][c]);
         }
 
-        return setIsValid(set);
+        boolean isValid = setIsValid(set);
+        if (!isValid) System.out.println("Row " + r + " is not valid.");
+
+        return isValid;
     }
 
     public boolean colIsValid(int c) {
@@ -52,7 +55,10 @@ public class Puzzle {
             set.add(grid[r][c]);
         }
 
-        return setIsValid(set);
+        boolean isValid = setIsValid(set);
+        if (!isValid) System.out.println("Col " + c + " is not valid.");
+
+        return isValid;
     }
 
     public boolean boxIsValid(int i, int j) {
@@ -65,7 +71,10 @@ public class Puzzle {
             }
         }
 
-        return setIsValid(set);
+        boolean isValid = setIsValid(set);
+        if (!isValid) System.out.println("Box (" + i + "," + j + ") is not valid.");
+
+        return isValid;
     }
 
     public boolean setIsValid(List<Integer> set) {
