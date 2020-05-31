@@ -1,5 +1,7 @@
 package basic.sudoku;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 public class Puzzle {
@@ -34,39 +36,42 @@ public class Puzzle {
     }
 
     public boolean rowIsValid(int r) {
-        int[] set = grid[r];
+        List<Integer> set = new ArrayList<Integer>();
+
+        for (int c = 0; c < 9; c++) {
+            set.add(grid[r][c]);
+        }
 
         return setIsValid(set);
     }
 
     public boolean colIsValid(int c) {
-        int[] set = new int[9];
+        List<Integer> set = new ArrayList<Integer>();
 
-        for (int i = 0; i < 9; i++) {
-            set[i] = grid[i][c];
+        for (int r = 0; r < 9; r++) {
+            set.add(grid[r][c]);
         }
 
         return setIsValid(set);
     }
 
     public boolean boxIsValid(int i, int j) {
-        int[] set = new int[9];
+        List<Integer> set = new ArrayList<Integer>();
 
         // Unroll box into array.
         for (int r = 0; r < 3; r++) {
             for (int c = 0; c < 3; c++) {
-                set[3*r+c] = grid[3*i + r][3*j + c];
+                set.add(grid[3*i + r][3*j + c]);
             }
         }
 
         return setIsValid(set);
     }
 
-    private boolean setIsValid(int[] set) {
-        int[] mem = new int[9];
+    public boolean setIsValid(List<Integer> set) {
+        int[] mem = {0,0,0,0,0,0,0,0,0};
 
-        for (int i = 0; i < 9; i++) {
-            int v = set[i];
+        for (Integer v : set) {
             if (v != -1) {
                 mem[v-1]++;
                 if (mem[v-1] > 1)  return false;
@@ -93,37 +98,49 @@ public class Puzzle {
     public Stack<PositionAndVal> solveIter(Stack<PositionAndVal> guesses) {
         int[] pos = getPos();
 
-        if (pos[0] == -1 && pos[1] == -1) {
-            // No next position.
-            return guesses;
-        } else {
-            int[] vals = getPossibleVals(pos[0], pos[1]);
+        if (pos[0] != -1 && pos[1] != -1) {
+            List<Integer> vals = getPossibleVals(pos[0], pos[1]);
+
             for (int val : vals) {
                 PositionAndVal posVal = new PositionAndVal(pos[0], pos[1], val);
                 guesses.push(posVal);
                 solveIter(guesses);
             }
         }
+
+        return guesses;
     }
 
-    public int[] getPossibleVals(int r, int c) {
+    public List<Integer> getPossibleVals(int row, int col) {
         boolean[] isPossible = {true,true,true,true,true,true,true,true,true};
 
-        int quadR = r / 3;
-        int quadC = c / 3;
-
-        for (int i = 0; i < 9; i++) {
-            if (grid[r][i] != -1) isPossible[grid[r][c] - 1] = false;
-
-            if (grid[i][r] != -1) isPossible[grid[i][c] - 1] = false;
-
-            int quadRowInd = i / 3;
-            int quadColInd = i % 3;
-            int quadVal = grid[quadR + quadRowInd][quadC + quadColInd];
-            if (quadVal != -1) isPossible[quadVal - 1] = false;
+        for (int c = 0; c < 9; c++) {
+            if (grid[row][c] != -1) isPossible[grid[row][c] - 1] = false;
         }
 
-        
+        for (int r = 0; r < 9; r++) {
+            if (grid[r][col] != -1) isPossible[grid[r][col] - 1] = false;
+        }
+
+        int quadR = row / 3;
+        int quadC = col / 3;
+
+        for (int r = 0; r < 3; r++) {
+            for (int c = 0; c < 3; c++) {
+
+                int quadVal = grid[quadR + r][quadC + c];
+
+                if (quadVal != -1) isPossible[quadVal - 1] = false;
+            }
+        }
+
+        List<Integer> possibleVals = new ArrayList<Integer>();
+
+        for (int i = 0; i < 9; i++) {
+            if (isPossible[i]) possibleVals.add(i+1);
+        }
+
+        return possibleVals;
     }
 
     public int[] getPos() {
