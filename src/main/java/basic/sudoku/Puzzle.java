@@ -1,5 +1,7 @@
 package basic.sudoku;
 
+import java.util.Stack;
+
 public class Puzzle {
     int[][] grid;
 
@@ -74,8 +76,69 @@ public class Puzzle {
         return true;
     }
 
-    public Puzzle solve() {
-        return this;
+    public void setAtPosition(PositionAndVal positionAndVal) {
+        grid[positionAndVal.r][positionAndVal.c] = positionAndVal.val;
+    }
+
+    public void solve() {
+        Stack<PositionAndVal> entryStack = new Stack<PositionAndVal>();
+
+        entryStack = solveIter(entryStack);
+
+        while (!entryStack.isEmpty()) {
+            setAtPosition(entryStack.pop());
+        }
+    }
+
+    public Stack<PositionAndVal> solveIter(Stack<PositionAndVal> guesses) {
+        int[] pos = getPos();
+
+        if (pos[0] == -1 && pos[1] == -1) {
+            // No next position.
+            return guesses;
+        } else {
+            int[] vals = getPossibleVals(pos[0], pos[1]);
+            for (int val : vals) {
+                PositionAndVal posVal = new PositionAndVal(pos[0], pos[1], val);
+                guesses.push(posVal);
+                solveIter(guesses);
+            }
+        }
+    }
+
+    public int[] getPossibleVals(int r, int c) {
+        boolean[] isPossible = {true,true,true,true,true,true,true,true,true};
+
+        int quadR = r / 3;
+        int quadC = c / 3;
+
+        for (int i = 0; i < 9; i++) {
+            if (grid[r][i] != -1) isPossible[grid[r][c] - 1] = false;
+
+            if (grid[i][r] != -1) isPossible[grid[i][c] - 1] = false;
+
+            int quadRowInd = i / 3;
+            int quadColInd = i % 3;
+            int quadVal = grid[quadR + quadRowInd][quadC + quadColInd];
+            if (quadVal != -1) isPossible[quadVal - 1] = false;
+        }
+
+        
+    }
+
+    public int[] getPos() {
+        int[] out = {-1, -1};
+
+        for (int r = 0; r < 9; r++) {
+            for (int c = 0; c < 9; c++) {
+                if (grid[r][c] == -1) {
+                    out[0] = r;
+                    out[1] = c;
+                }
+            }
+        }
+
+        return out;
     }
 
     public String getStr() {
