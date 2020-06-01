@@ -8,7 +8,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 public class Generator {
-    public Puzzle getNewPuzzle() throws IOException, Error {
+    public static Puzzle getNewPuzzle() throws IOException, Error {
         Document page = Jsoup.connect("https://www.sudokuweb.org").get();
 
         Element grid = page.select("div.sudoku").first();
@@ -17,7 +17,7 @@ public class Generator {
     }
 
 
-    private Puzzle parseFromDivElt(Element grid) throws Error {
+    private static Puzzle parseFromDivElt(Element grid) throws Error {
         Elements rows = grid.select("tr");
 
         if (rows.size() != 9) throw new Error("Wrong row size.");
@@ -34,7 +34,7 @@ public class Generator {
     }
 
 
-    private int[] getRow(Element row) throws Error {
+    private static int[] getRow(Element row) throws Error {
         Elements cells = row.select("td");
 
         if (cells.size() != 9) throw new Error("Not a 9x9 grid.");
@@ -48,7 +48,7 @@ public class Generator {
             Element span = cell.select("span.sedy").first();
 
             if (span == null) {
-                outArr[i] = -1;
+                outArr[i] = 0;
             } else {
                 outArr[i] = Integer.parseInt(span.text());
             }

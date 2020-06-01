@@ -1,13 +1,15 @@
 package basic.sudoku;
 
 public class PositionAndVal {
-    public int r;
-    public int c;
+    public Position pos;
     public int val;
 
     public PositionAndVal(int row, int col, int value) {
-        r = row;
-        c = col;
+        pos = new Position(row, col);
         val = value;
+    }
+
+    public String getKey() {
+        return pos.getKey();
     }
 }

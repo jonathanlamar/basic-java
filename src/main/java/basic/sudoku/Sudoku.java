@@ -7,18 +7,17 @@ public class Sudoku {
 
         promptEnterKey("Press Enter to grab a sudoku puzzle."); 
 
-        Generator gen = new Generator();
-        Puzzle grid = gen.getNewPuzzle();
+        Puzzle puz = Generator.getNewPuzzle();
 
         System.out.println("Here is your puzzle.");
-        System.out.println(grid.getStr());
+        System.out.println(puz.getStr());
         
         promptEnterKey("Press Enter to solve the puzzle.");
 
-        grid.solve();
+        puz = Solver.solvePuzzle(puz);
 
         System.out.println("Here is your solved puzzle.");
-        System.out.println(grid.getStr());
+        System.out.println(puz.getStr());
 
     }
 
