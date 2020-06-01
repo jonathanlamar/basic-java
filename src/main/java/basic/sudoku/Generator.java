@@ -8,12 +8,21 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 public class Generator {
-    public static Puzzle getNewPuzzle() throws IOException, Error {
+    public static Puzzle getNewPuzzle(boolean print) throws IOException, Error {
         Document page = Jsoup.connect("https://www.sudokuweb.org").get();
 
         Element grid = page.select("div.sudoku").first();
 
-        return parseFromDivElt(grid);
+        Puzzle puz = parseFromDivElt(grid);
+
+        if (print) System.out.println(puz.getStr());
+
+        return puz;
+    }
+
+
+    public static Puzzle getNewPuzzle() throws IOException, Error {
+        return getNewPuzzle(false);
     }
 
 

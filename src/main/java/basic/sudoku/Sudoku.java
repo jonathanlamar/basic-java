@@ -7,11 +7,9 @@ public class Sudoku {
 
         promptEnterKey("Press Enter to grab a sudoku puzzle."); 
 
-        Puzzle puz = Generator.getNewPuzzle();
-
         System.out.println("Here is your puzzle.");
-        System.out.println(puz.getStr());
-        
+        Puzzle puz = Generator.getNewPuzzle(true);
+
         promptEnterKey("Press Enter to solve the puzzle.");
 
         puz = Solver.solvePuzzle(puz);

@@ -14,7 +14,7 @@ public class ValidityTests {
         // I believe 10 will convice me.
         for (int i = 0; i < 10; i++) {
             Puzzle puz = Generator.getNewPuzzle();
-            assertTrue(puz.checkIsValid());
+            assertTrue(puz.checkIsValid(true));
         }
     }
 
@@ -24,7 +24,7 @@ public class ValidityTests {
         // I believe 10 will convice me.
         for (int i = 0; i < 10; i++) {
             Puzzle puz = Generator.getNewPuzzle();
-            assertFalse(puz.checkIsSolved());
+            assertFalse(puz.checkIsSolved(true));
         }
     }
 
@@ -33,19 +33,19 @@ public class ValidityTests {
     public void testCheckIsValid() throws FileNotFoundException, IOException {
 
         Puzzle validPuz = Parser.readFromCsv("src/test/resources/valid.csv");
-        assertTrue(validPuz.checkIsValid());
+        assertTrue(validPuz.checkIsValid(true));
 
         // This has a repeat element in one row
         Puzzle rowInvalidPuz = Parser.readFromCsv("src/test/resources/invalid_row.csv");
-        assertFalse(rowInvalidPuz.checkIsValid());
+        assertFalse(rowInvalidPuz.checkIsValid(true));
 
         // This has a repeat element in one col
         Puzzle colInvalidPuz = Parser.readFromCsv("src/test/resources/invalid_col.csv");
-        assertFalse(colInvalidPuz.checkIsValid());
+        assertFalse(colInvalidPuz.checkIsValid(true));
 
         // This has a repeat element in one box
         Puzzle boxInvalidPuz = Parser.readFromCsv("src/test/resources/invalid_box.csv");
-        assertFalse(boxInvalidPuz.checkIsValid());
+        assertFalse(boxInvalidPuz.checkIsValid(true));
 
     }
 }

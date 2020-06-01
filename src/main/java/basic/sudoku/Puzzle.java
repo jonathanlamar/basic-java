@@ -31,7 +31,24 @@ public class Puzzle {
      * @return int[9][9] with zeros in place of empty cells.
      */
     public int[][] getGrid() {
-        return grid;
+        int[][] outGrid = new int[9][9];
+
+        for (int r = 0; r < 9; r++) {
+            outGrid[r] = grid[r].clone();
+        }
+
+        return outGrid;
+    }
+
+
+    /**
+     * Return a copy of self.
+     * @return new puzzle with identical grid.
+     */
+    public Puzzle copy() {
+        int[][] newGrid = getGrid();
+
+        return new Puzzle(newGrid);
     }
 
 
@@ -83,16 +100,16 @@ public class Puzzle {
      * Check if the puzzle is a valid sudoku
      * @return - True if rows, columns, and boxes contain no repeat numbers.
      */
-    public boolean checkIsValid() {
+    public boolean checkIsValid(boolean print) {
 
         for (int i = 0; i < 9; i++) {
-            if ( !rowIsValid(i) ) return false;
-            if ( !colIsValid(i) ) return false;
+            if ( !rowIsValid(i, print) ) return false;
+            if ( !colIsValid(i, print) ) return false;
         }
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                if ( !boxIsValid(i, j) ) return false;
+                if ( !boxIsValid(i, j, print) ) return false;
             }
         }
 
@@ -100,18 +117,28 @@ public class Puzzle {
     }
 
 
+    public boolean checkIsValid() {
+        return checkIsValid(false);
+    }
+
+
     /**
      * Check if the puzzle is solved
      * @return - true if valid and contains no empty cells.
      */
-    public boolean checkIsSolved() {
+    public boolean checkIsSolved(boolean print) {
         for (int r = 0; r < 9; r++) {
             for (int c = 0; c < 9; c++) {
                 if (grid[r][c] == 0) return false;
             }
         }
 
-        return checkIsValid();
+        return checkIsValid(print);
+    }
+
+
+    public boolean checkIsSolved() {
+        return checkIsSolved(false);
     }
 
 
@@ -160,13 +187,14 @@ public class Puzzle {
     /**
      * Check row is valid
      * @param r - row number, indexed from 0
+     * @param print - whether to print QA statements
      * @return true if the row does not contain repeat values.
      */
-    private boolean rowIsValid(int r) {
+    private boolean rowIsValid(int r, boolean print) {
         int[] row = getRow(r);
 
         boolean isValid = setIsValid(row);
-        if (!isValid) System.out.println("Row " + r + " is not valid.");
+        if (!isValid && print) System.out.println("Row " + r + " is not valid.");
 
         return isValid;
     }
@@ -175,13 +203,14 @@ public class Puzzle {
     /**
      * Check column is valid
      * @param c - column number, indexed from 0
+     * @param print - whether to print QA statements
      * @return - true if the column has no repeat elements
      */
-    private boolean colIsValid(int c) {
+    private boolean colIsValid(int c, boolean print) {
         int[] col = getCol(c);
 
         boolean isValid = setIsValid(col);
-        if (!isValid) System.out.println("Col " + c + " is not valid.");
+        if (!isValid && print) System.out.println("Col " + c + " is not valid.");
 
         return isValid;
     }
@@ -191,9 +220,10 @@ public class Puzzle {
      * Check box is valid
      * @param i - vertical position of box (0, 1, 2)
      * @param j = horizontal position of box (0,1,2)
+     * @param print - whether to print QA statements
      * @return True if the box has no repeat elements
      */
-    private boolean boxIsValid(int i, int j) {
+    private boolean boxIsValid(int i, int j, boolean print) {
         // Index box with top-left index
         int[][] box = getBox(3*i, 3*j);
 
@@ -205,7 +235,7 @@ public class Puzzle {
         }
 
         boolean isValid = setIsValid(boxFlat);
-        if (!isValid) System.out.println("Box (" + i + "," + j + ") is not valid.");
+        if (!isValid && print) System.out.println("Box (" + i + "," + j + ") is not valid.");
 
         return isValid;
     }
