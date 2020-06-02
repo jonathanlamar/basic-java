@@ -1,7 +1,6 @@
 package basic.sudoku;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Stack;
 
 public class Solver {
@@ -11,69 +10,93 @@ public class Solver {
      * @param puz - unsolved puzzle
      * @return Puzzle, solved
      */
-    public static Puzzle solvePuzzle(Puzzle puz) throws Error {
+    public static Puzzle solvePuzzle(Puzzle puz, boolean print) throws Error, InterruptedException {
 
-        if ( puz.checkIsSolved() ) return puz;
+        // This is the main check for invalid puzzles.
+        if (!puz.checkIsValid()) throw new Error("Puzzle is not valid.");
+
+        // Some of the code that follows assumes an unsolved puzzle.
+        if (puz.checkIsSolved()) return puz;
+
+        // clear screen and show puzzle.
+        if (print) printAndClear(puz);
 
         // We will implement a backtracking method, holding previous guesses in a stack
-        Stack<GuessAndState> prevGuesses = new Stack<GuessAndState>();
-        // Get all valid numbers to try.
-        prevGuesses.addAll(getNextGuesses(puz));
+        HashMap<String, Stack<Integer>> prevGuesses = new HashMap<String, Stack<Integer>>();
 
-        while (!prevGuesses.isEmpty()) {
-            GuessAndState guess = prevGuesses.pop();
-            
-            System.out.println(String.format(
-                "Popping guess %d at (%d,%d) off the stack.",
-                guess.value, guess.row, guess.column)
-            );
-
-            puz = guess.execute();
-
-            System.out.println("Current state:");
-            System.out.println(puz.getStr());
-
-            if (!puz.checkIsValid()) {
-                System.out.println(puz.getStr());
-                throw new Error("Invalid path.");
+        // Initalize previous guesses.
+        for (int r = 0; r < 9; r++) {
+            for (int c = 0; c < 9; c++) {
+                prevGuesses.put(getKey(r, c), new Stack<Integer>());
             }
-
-            if (puz.checkIsSolved()) break;
-
-            // Get all valid numbers to try.
-            List<GuessAndState> nextGuesses = getNextGuesses(puz);
-            prevGuesses.addAll(nextGuesses);
         }
 
-        if (!puz.checkIsValid()) System.out.println("Final puzzle is not valid.");
-        if (!puz.checkIsSolved()) System.out.println("Final puzzle is not solved.");
+        // Position of first empty cell
+        int[] nextPos = getNextEmptyCell(puz);
+
+        // All guesses at that cell.
+        Stack<GuessAndState> guessesAtPos = getGuessesAtPos(puz, nextPos[0], nextPos[1]);
+
+        while (!puz.checkIsSolved() && !guessesAtPos.empty()) {
+
+            GuessAndState guess = guessesAtPos.pop();
+
+            try {
+                puz = solvePuzzle(guess.execute(), print);
+            } catch (Error e) {
+                System.out.println(e.getLocalizedMessage());
+                continue;
+            }
+        }
+
+        if (!puz.checkIsSolved()) throw new Error("Puzzle is not solved.");
+
         return puz;
     }
 
 
-    /**
-     * Get all guesses at all positions, except previous bad guesses.
-     * @param puz - Puzzle being solved
-     * @return - All guesses
-     * @throws Error - If any position lacks any guesses.
-     */
-    public static List<GuessAndState> getNextGuesses(Puzzle puz) throws Error {
-        List<GuessAndState> guesses = new ArrayList<GuessAndState>();
+    public static Puzzle solvePuzzle(Puzzle puz) throws Error, InterruptedException {
+        return solvePuzzle(puz, false);
+    }
 
-        for (int r = 0; r < 9; r++) {
-            for (int c = 0; c < 9; c++) {
-                if (puz.getGrid()[r][c] != 0) continue;
 
-                List<GuessAndState> guessesAtPos = getGuessesAtPos(puz, r, c);
+    public static void printAndClear(Puzzle puzzle) throws InterruptedException {
+        // Clear screen
+        System.out.print("\033[H\033[2J");  
+        System.out.flush();  
 
-                // If any position has no valid guesses, we are in a bad path.
-                if (guessesAtPos.isEmpty()) return new ArrayList<GuessAndState>();
+        System.out.println("Here is the puzzle:");
+        puzzle.print();
 
-                guesses.addAll(guessesAtPos);
-            }
+        // Wait 0.1 seconds
+        Thread.sleep(100);
+    }
+
+    public static String getKey(int row, int column) {
+        return Integer.toString(row) + Integer.toString(column);
+    }
+
+    public static int[] getNextEmptyCell(Puzzle puz) {
+        int[][] grid = puz.getGrid();
+
+        // Find lexicographically first empty cell.
+        int guessRow = 0;
+        int guessCol = 0;
+        while (grid[guessRow][guessCol] != 0) {
+            if (guessCol < 8) guessCol++;
+            else if (guessRow < 8) {
+                guessCol = 0;
+                guessRow++;
+            } else break;
         }
 
-        return guesses;
+        if (guessCol == 8 && guessRow == 8) {
+            System.out.println("Error - no empty cells.  Current state:");
+            System.out.println(puz.getStr());
+            throw new Error("No empty cells.");
+        }
+
+        return new int[] {guessRow, guessCol};
     }
 
 
@@ -85,7 +108,7 @@ public class Solver {
      * @return - All guesses
      * @throws Error - If the position lacks any guesses.
      */
-    public static List<GuessAndState> getGuessesAtPos(Puzzle puz, int r, int c) throws Error {
+    public static Stack<GuessAndState> getGuessesAtPos(Puzzle puz, int r, int c) throws Error {
 
         if (puz.getGrid()[r][c] != 0) throw new Error("Making a guess on a filled cell.");
 
@@ -100,32 +123,23 @@ public class Solver {
 
         for (int i = 0; i < 9; i++) {
             int rowVal = row[i];
-            if (rowVal != 0) {
-                canGuess[rowVal-1] = false;
-                System.out.println(String.format("Nulling out %d", rowVal));
-            }
+            if (rowVal != 0) canGuess[rowVal-1] = false;
 
             int colVal = col[i];
-            if (colVal != 0) {
-                canGuess[colVal-1] = false;
-                System.out.println(String.format("Nulling out %d", colVal));
-            }
+            if (colVal != 0) canGuess[colVal-1] = false;
 
             int boxVal = box[i/3][i%3];
-            if (boxVal != 0) {
-                canGuess[boxVal-1] = false;
-                System.out.println(String.format("Nulling out %d", boxVal));
-            }
+            if (boxVal != 0) canGuess[boxVal-1] = false;
         }
 
         // What remains is the guesses list
-        List<GuessAndState> guesses = new ArrayList<GuessAndState>();
+        Stack<GuessAndState> guesses = new Stack<GuessAndState>();
 
         for (int i = 0; i < 9; i++) {
             if (canGuess[i]) {
                 System.out.println(String.format("Pushing guess %d at (%d,%d) onto stack.", i+1, r, c));
                 GuessAndState guess = new GuessAndState(puz, r, c, i+1);
-                guesses.add(guess);
+                guesses.push(guess);
             }
         }
 

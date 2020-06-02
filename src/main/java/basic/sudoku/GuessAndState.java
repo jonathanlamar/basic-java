@@ -4,7 +4,7 @@ public class GuessAndState {
     public int row;
     public int column;
     public int value;
-    public Puzzle puzzle;
+    private Puzzle puzzle;
 
     public GuessAndState(Puzzle puz, int r, int c, int val) throws Error {
 
@@ -24,6 +24,11 @@ public class GuessAndState {
         grid[row][column] = value;
 
         return new Puzzle(grid);
+    }
+
+
+    public Puzzle getPuzzle() {
+        return puzzle.copy();
     }
 }
 

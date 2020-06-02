@@ -22,7 +22,11 @@ public class Puzzle {
             if (is.length != 9) throw new Error("Row does not have 9 cells.");
         }
 
-        grid = sudokuGrid; 
+        // Copy grid by value
+        grid = new int[9][9];
+        for (int r = 0; r < 9; r++) {
+            grid[r] = sudokuGrid[r].clone();
+        }
     }
 
 
@@ -139,6 +143,12 @@ public class Puzzle {
 
     public boolean checkIsSolved() {
         return checkIsSolved(false);
+    }
+
+
+    /** Print string representation */
+    public void print() {
+        System.out.println(getStr());
     }
 
 

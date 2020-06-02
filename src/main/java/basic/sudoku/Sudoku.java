@@ -3,7 +3,7 @@ package basic.sudoku;
 import java.io.IOException;
 
 public class Sudoku {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
 
         promptEnterKey("Press Enter to grab a sudoku puzzle."); 
 
