@@ -113,7 +113,7 @@ public class Puzzle {
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                if ( !boxIsValid(i, j, print) ) return false;
+                if ( !boxIsValid(3*i, 3*j, print) ) return false;
             }
         }
 
@@ -228,14 +228,14 @@ public class Puzzle {
 
     /**
      * Check box is valid
-     * @param i - vertical position of box (0, 1, 2)
-     * @param j = horizontal position of box (0,1,2)
+     * @param r - row of a cell in the box
+     * @param c - col of a cell in the box
      * @param print - whether to print QA statements
      * @return True if the box has no repeat elements
      */
-    private boolean boxIsValid(int i, int j, boolean print) {
+    private boolean boxIsValid(int r, int c, boolean print) {
         // Index box with top-left index
-        int[][] box = getBox(3*i, 3*j);
+        int[][] box = getBox(r, c);
 
         int[] boxFlat = new int[9];
 
@@ -245,7 +245,7 @@ public class Puzzle {
         }
 
         boolean isValid = setIsValid(boxFlat);
-        if (!isValid && print) System.out.println("Box (" + i + "," + j + ") is not valid.");
+        if (!isValid && print) System.out.println("Box containing (" + r + "," + c + ") is not valid.");
 
         return isValid;
     }
