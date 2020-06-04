@@ -12,10 +12,10 @@ public class Sudoku {
 
         promptEnterKey("Press Enter to solve the puzzle.");
 
-        puz = Solver.solvePuzzle(puz);
+        puz = Solver.solvePuzzle(puz, true);
 
         System.out.println("Here is your solved puzzle.");
-        System.out.println(puz.getStr());
+        puz.print();
 
     }
 

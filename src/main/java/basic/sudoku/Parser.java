@@ -13,6 +13,14 @@ import com.opencsv.CSVWriter;
 
 public class Parser {
 
+    /**
+     * Read csv and parse as aPuzzle instance
+     * @param fileString - filename with path relative to where jshell was launched.
+     * @return - Puzzle instance
+     * @throws FileNotFoundException
+     * @throws IOException
+     * @throws Error - If puzzle is not 9x9
+     */
     public static Puzzle readFromCsv(String fileString) throws FileNotFoundException, IOException, Error {
 
         Reader fileIn = new FileReader(fileString);
@@ -37,6 +45,12 @@ public class Parser {
 
     }
 
+    /**
+     * Empty cells are encoded as periods.  This method parses that encoding
+     * and returns an integer with empty cells encoded as 0
+     * @param cellVal - Value of csv cell
+     * @return - integer encoding
+     */
     public static int parseCell(String cellVal) {
 
         int out;
@@ -50,7 +64,15 @@ public class Parser {
         return out;
     }
 
-    public static void saveToCsv(Puzzle puz, String outPath) throws FileNotFoundException, IOException {
+
+
+    /**
+     * Save puzzle as a csv file.
+     * @param puz - Puzzle to save
+     * @param outPath - file name, with path relative to where the jshell was launched
+     * @throws IOException
+     */
+    public static void saveToCsv(Puzzle puz, String outPath) throws IOException {
         Writer fileOut = new FileWriter(outPath);
         CSVWriter writer = new CSVWriter(fileOut,
             CSVWriter.DEFAULT_SEPARATOR,

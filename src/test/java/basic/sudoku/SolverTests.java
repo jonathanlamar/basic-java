@@ -1,13 +1,20 @@
 package basic.sudoku;
 
+import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+
 import org.junit.Test;
 
 public class SolverTests {
     @Test
-    public void testSolutionExists() {
+    public void testSolutionExists() throws IOException, InterruptedException {
         for (int i = 0; i < 10; i++) {
-            // Puzzle puz = Generator.getNewPuzzle();
-            // TODO: Load 10 puzzles and solve them all.
+            Puzzle puz = Generator.getNewPuzzle();
+            Puzzle solvedPuz = Solver.solvePuzzle(puz);
+
+            assertTrue(solvedPuz.checkIsValid());
+            assertTrue(solvedPuz.checkIsSolved());
         }
     }
 

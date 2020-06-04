@@ -8,6 +8,14 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 public class Generator {
+
+    /**
+     * Scrape a new random puzzle from the sudokuweb.org
+     * @param print - Whether to show the puzzle
+     * @return - Puzzle instance
+     * @throws IOException
+     * @throws Error - If the puzzle is not 9x9
+     */
     public static Puzzle getNewPuzzle(boolean print) throws IOException, Error {
         Document page = Jsoup.connect("https://www.sudokuweb.org").get();
 
@@ -15,17 +23,29 @@ public class Generator {
 
         Puzzle puz = parseFromDivElt(grid);
 
-        if (print) System.out.println(puz.getStr());
+        if (print) puz.print();
 
         return puz;
     }
 
 
+    /**
+     * Scrape a new random puzzle from the sudokuweb.org
+     * @return - Puzzle instance
+     * @throws IOException
+     * @throws Error - If the puzzle is not 9x9
+     */
     public static Puzzle getNewPuzzle() throws IOException, Error {
         return getNewPuzzle(false);
     }
 
 
+    /**
+     * Parse a div Element from the html source of the webpage.
+     * @param grid - div element representing the puzzle
+     * @return - puzzle instance
+     * @throws Error - If the puzzle is not 9x9.
+     */
     private static Puzzle parseFromDivElt(Element grid) throws Error {
         Elements rows = grid.select("tr");
 
@@ -43,6 +63,13 @@ public class Generator {
     }
 
 
+    /**
+     * Get row from a tr Element
+     * @param row - tr Element representing puzzle row
+     * @return - int[9] containing 1-9 int for the filled cells, and blanks
+     * imputed as 0
+     * @throws Error - if the row does not contain 9 cells.
+     */
     private static int[] getRow(Element row) throws Error {
         Elements cells = row.select("td");
 

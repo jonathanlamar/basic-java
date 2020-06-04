@@ -100,8 +100,41 @@ public class Puzzle {
     }
 
 
+
+    /**
+     * Get location of lexicographically first empty cell in puzzle.
+     * @return int[2] = {row, column}
+     */
+    public int[] getNextEmptyCell() {
+        int[][] grid = getGrid();
+
+        // Find lexicographically first empty cell.
+        int guessRow = 0;
+        int guessCol = 0;
+        boolean foundOne = false;
+        while (!foundOne) {
+            if (grid[guessRow][guessCol] == 0) {
+                foundOne = true;
+                break;
+            } else if (guessCol < 8) {
+                guessCol++;
+            } else if (guessRow < 8) {
+                guessCol = 0;
+                guessRow++;
+            } else {
+                break;
+            }
+        }
+
+        if (!foundOne) throw new Error("No empty cells.");
+
+        return new int[] {guessRow, guessCol};
+    }
+
+
     /**
      * Check if the puzzle is a valid sudoku
+     * @param print - whether to print failure cases.
      * @return - True if rows, columns, and boxes contain no repeat numbers.
      */
     public boolean checkIsValid(boolean print) {
@@ -121,6 +154,10 @@ public class Puzzle {
     }
 
 
+    /**
+     * Check if the puzzle is a valid sudoku
+     * @return - True if rows, columns, and boxes contain no repeat numbers.
+     */
     public boolean checkIsValid() {
         return checkIsValid(false);
     }
@@ -128,6 +165,7 @@ public class Puzzle {
 
     /**
      * Check if the puzzle is solved
+     * @param print - whether to print validty checks
      * @return - true if valid and contains no empty cells.
      */
     public boolean checkIsSolved(boolean print) {
@@ -141,53 +179,34 @@ public class Puzzle {
     }
 
 
+    /**
+     * Check if the puzzle is solved
+     * @return - true if valid and contains no empty cells.
+     */
     public boolean checkIsSolved() {
         return checkIsSolved(false);
+    }
+
+
+    /**
+     * Clear screen, print, and pause 100ms.
+     * @throws InterruptedException For Ctrl-C
+     */
+    public void printAndClear() throws InterruptedException {
+        // Clear screen
+        System.out.print("\033[H\033[2J");  
+        System.out.flush();  
+
+        print();
+
+        // Wait 0.1 seconds
+        Thread.sleep(100);
     }
 
 
     /** Print string representation */
     public void print() {
         System.out.println(getStr());
-    }
-
-
-    /**
-     * Pretty formatted string.
-     * @return - String representation of puzzle
-     */
-    public String getStr() {
-        String str =  "+=================+\n";
-        for (int r = 0; r < 9; r++) {
-            str += "‖";
-            for (int c = 0; c < 9; c++) {
-                String cell;
-
-                if (grid[r][c] == 0) {
-                    cell = " ";
-                } else {
-                    cell = Integer.toString(grid[r][c]);
-                }
-
-                if (c < 8) {
-                    if (c % 3 == 2) cell += "‖";
-                    else cell += "|";
-                } else {
-                    cell += "‖\n";
-                }
-
-                str += cell;
-            }
-
-            if (r < 8) {
-                if (r % 3 == 2) str += "+=================+\n";
-                else str += "+-----------------+\n";
-            } else {
-                str +=  "+=================+";
-            }
-        }
-
-        return str;
     }
 
 
@@ -270,4 +289,42 @@ public class Puzzle {
         return true;
     }
 
+
+    /**
+     * Pretty formatted string.
+     * @return - String representation of puzzle
+     */
+    private String getStr() {
+        String str =  "+=================+\n";
+        for (int r = 0; r < 9; r++) {
+            str += "‖";
+            for (int c = 0; c < 9; c++) {
+                String cell;
+
+                if (grid[r][c] == 0) {
+                    cell = " ";
+                } else {
+                    cell = Integer.toString(grid[r][c]);
+                }
+
+                if (c < 8) {
+                    if (c % 3 == 2) cell += "‖";
+                    else cell += "|";
+                } else {
+                    cell += "‖\n";
+                }
+
+                str += cell;
+            }
+
+            if (r < 8) {
+                if (r % 3 == 2) str += "+=================+\n";
+                else str += "+-----------------+\n";
+            } else {
+                str +=  "+=================+";
+            }
+        }
+
+        return str;
+    }
 }
