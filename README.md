@@ -1,5 +1,9 @@
 # Extremely Simple Java Projects
 
+I am an experienced scala developer, and I need to learn Java for my new job.
+Since my brain is scrambled eggs, I can only learn through implementing simple
+projects.  These are some that I have chosen to (hopefully) knock out easily.
+
 ## Sudoku Solver
 
 Goals:
