@@ -80,26 +80,46 @@ public class Sprite {
 
     @Override
     public String toString() {
-        double[][] rect = getRectangle();
         String str = "";
 
         for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                if (rect[i][j] < 0.2) str += " ";
+            str += stringRow(i) + "\n";
+        }
 
-                // Light shade
-                else if (rect[i][j] < 0.4) str += "\u2591";
+        return str;
+    }
 
-                // Medium shade
-                else if (rect[i][j] < 0.6) str += "\u2592";
 
-                // Heavy shade
-                else if (rect[i][j] < 0.8) str += "\u2593";
+    /**
+     * Get row of string, for gluing words.
+     * @param row - which row
+     * @return - Just the row
+     * @throws Error if row is out of range
+     */
+    public String stringRow(int row) 
+    throws Error 
+    {
+        if (row < 0 || row >= 20) {
+            throw new Error("invalid row number");
+        }
 
-                // Full block
-                else  str += "\u2588";
-            }
-            str += "\n";
+        double[][] rect = getRectangle();
+        String str = new String();
+
+        for (int c = 0; c < width; c++) {
+            if (rect[row][c] < 0.2) str += " ";
+
+            // Light shade
+            else if (rect[row][c] < 0.4) str += "\u2591";
+
+            // Medium shade
+            else if (rect[row][c] < 0.6) str += "\u2592";
+
+            // Heavy shade
+            else if (rect[row][c] < 0.8) str += "\u2593";
+
+            // Full block
+            else  str += "\u2588";
         }
 
         return str;
