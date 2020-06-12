@@ -78,10 +78,12 @@ public class Ascii {
 
     public static String spellWord(String word) {
         String outStr = new String();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < Sprite.height; i++) {
             for (int j = 0; j < word.length(); j++) {
+
                 String letter = word.substring(j, j+1);
                 Sprite sprite = spriteMap.get(letter);
+
                 outStr += sprite.stringRow(i);
             }
             outStr += "\n";

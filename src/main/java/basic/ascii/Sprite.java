@@ -149,24 +149,23 @@ public class Sprite {
      * Flatten rectangle into 1D array.
      * @param rect - 2D array
      * @return flattened array
-     * @throws Error if the rectangle has uneven rows.
+     * @throws Error if the rectangle has incorrect dimension
      */
     private static double[] flatten(double[][] rect)
     throws Error 
     {
-        int h = rect.length;
-        int w = rect[0].length;
+        double[] arr = new double[height * width];
 
-        double[] arr = new double[h*w];
+        if (rect.length != height) throw new Error("Wrong number of rows.");
 
-        for (int i = 0; i < h; i++) {
+        for (int i = 0; i < height; i++) {
 
-            if (rect[i].length != w) {
+            if (rect[i].length != width) {
                 throw new Error("Unequal width of rows.");
             }
 
-            for (int j = 0; j < w; j++) {
-                arr[w*i + j] = rect[i][j];
+            for (int j = 0; j < width; j++) {
+                arr[width*i + j] = rect[i][j];
             }
         }
 
